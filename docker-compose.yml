@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  pocketbase:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./receipt_data:/pb/pb_data
+      - ./receipt_public:/pb/pb_public
+    restart: unless-stopped 

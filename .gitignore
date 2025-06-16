@@ -1,0 +1,43 @@
+# Docker
+.docker/
+docker-compose.override.yml
+
+# PocketBase data
+pb_data/
+pb_migrations/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+/vendor/
+/bin/
+/pkg/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Build and dist directories
+dist/
+build/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/ 
