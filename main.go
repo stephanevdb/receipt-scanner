@@ -121,8 +121,10 @@ func main() {
 			result := []map[string]interface{}{}
 			for _, record := range records {
 				result = append(result, map[string]interface{}{
-					"name":  record.GetString("name"),
-					"price": record.Get("price"),
+					"name":     record.GetString("name"),
+					"price":    record.Get("price"),
+					"quantity": record.Get("quantity"),
+					"amount":   record.Get("amount"),
 				})
 			}
 
@@ -196,7 +198,7 @@ func main() {
 			defer client.Close()
 
 			model := client.GenerativeModel("gemini-1.5-flash")
-			prompt := genai.Text("Analyze this receipt and return a JSON object with four keys: 'title' (the name of the store), 'date' (in YYYY-MM-DD format), 'items' (an array of objects, each with 'name' and 'price'), and 'total' (the total amount). Only return the JSON object.")
+			prompt := genai.Text("Analyze this receipt and return a JSON object with four keys: 'title' (the name of the store), 'date' (in YYYY-MM-DD format), 'items' (an array of objects, each with 'name', 'price', and 'quantity'), and 'total' (the total amount). Only return the JSON object.")
 			imgPart := genai.ImageData(http.DetectContentType(imgData), imgData)
 
 			resp, err := model.GenerateContent(ctx, imgPart, prompt)
@@ -259,8 +261,13 @@ func main() {
 			if items, ok := resultJSON["items"].([]interface{}); ok {
 				for _, itemData := range items {
 					if itemMap, ok := itemData.(map[string]interface{}); ok {
-						if price, ok := itemMap["price"].(float64); ok {
-							calculatedTotal += price
+						price, priceOk := itemMap["price"].(float64)
+						quantity, quantityOk := itemMap["quantity"].(float64)
+						if !quantityOk {
+							quantity = 1
+						}
+						if priceOk {
+							calculatedTotal += price * quantity
 						}
 					}
 				}
@@ -286,9 +293,19 @@ func main() {
 						if name, ok := itemMap["name"].(string); ok {
 							itemRecord.Set("name", name)
 						}
+						priceVal := 0.0
 						if price, ok := itemMap["price"].(float64); ok {
 							itemRecord.Set("price", price)
+							priceVal = price
 						}
+						quantityVal := 1.0
+						if quantity, ok := itemMap["quantity"].(float64); ok {
+							itemRecord.Set("quantity", quantity)
+							quantityVal = quantity
+						} else {
+							itemRecord.Set("quantity", 1)
+						}
+						itemRecord.Set("amount", priceVal*quantityVal)
 						itemRecord.Set("receipt", receiptRecord.Id)
 
 						if err := dao.SaveRecord(itemRecord); err != nil {

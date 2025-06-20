@@ -123,6 +123,16 @@ func InitCollections(app *pocketbase.PocketBase) error {
 						Required: true,
 					},
 					&schema.SchemaField{
+						Name:     "quantity",
+						Type:     schema.FieldTypeNumber,
+						Required: false,
+					},
+					&schema.SchemaField{
+						Name:     "amount",
+						Type:     schema.FieldTypeNumber,
+						Required: false,
+					},
+					&schema.SchemaField{
 						Name:     "receipt",
 						Type:     schema.FieldTypeRelation,
 						Required: true,
@@ -154,6 +164,34 @@ func InitCollections(app *pocketbase.PocketBase) error {
 				}
 				log.Println("'receipt' relation updated successfully.")
 			}
+		}
+		if itemsCollection.Schema.GetFieldByName("quantity") == nil {
+			log.Println("Adding 'quantity' field to 'items' collection...")
+			field := &schema.SchemaField{
+				Name:     "quantity",
+				Type:     schema.FieldTypeNumber,
+				Required: false,
+			}
+			itemsCollection.Schema.AddField(field)
+			if err := dao.SaveCollection(itemsCollection); err != nil {
+				log.Printf("Error adding 'quantity' field to 'items' collection: %v", err)
+				return err
+			}
+			log.Println("'quantity' field added successfully.")
+		}
+		if itemsCollection.Schema.GetFieldByName("amount") == nil {
+			log.Println("Adding 'amount' field to 'items' collection...")
+			field := &schema.SchemaField{
+				Name:     "amount",
+				Type:     schema.FieldTypeNumber,
+				Required: false,
+			}
+			itemsCollection.Schema.AddField(field)
+			if err := dao.SaveCollection(itemsCollection); err != nil {
+				log.Printf("Error adding 'amount' field to 'items' collection: %v", err)
+				return err
+			}
+			log.Println("'amount' field added successfully.")
 		}
 	}
 

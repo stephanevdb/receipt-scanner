@@ -41,6 +41,7 @@ build/
 *.tmp
 *.temp
 .cache/
+/uploads
 
 # PocketBase
 /pb_data
