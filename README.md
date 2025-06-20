@@ -68,6 +68,8 @@ This project includes an interactive API documentation page. Once the server is 
 
 This page provides a user-friendly interface to view all available endpoints, their descriptions, and example responses.
 
+For a static, Markdown-formatted version of the API documentation, please see [API_DOCUMENTATION.md](./API_DOCUMENTATION.md).
+
 ### API Testing
 
 A dedicated test page is available to try out the API endpoints in a web-based interface.
