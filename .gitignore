@@ -40,4 +40,12 @@ build/
 # Temporary files
 *.tmp
 *.temp
-.cache/ 
+.cache/
+
+# PocketBase
+/pb_data
+/pb_migrations
+/pb_public
+/pb_hooks
+
+.env

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+    <div class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-12">API Test Page</h1>
+
+        <!-- Health Check -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-blue-600 border-b pb-2">Health Check</h2>
+            <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/health</code> endpoint to ensure the server is responding.</p>
+            <button id="healthBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Test API Health</button>
+            <pre id="healthResult" class="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto mt-4"></pre>
+        </div>
+
+        <!-- Receipt Workflow -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <!-- Step 1: Upload -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-green-600 border-b pb-2">Step 1: Upload Receipt</h2>
+                <form id="uploadForm" class="space-y-4 mt-6">
+                    <div>
+                        <label for="receipt" class="block mb-2 text-sm font-medium text-gray-900">Select receipt image:</label>
+                        <input type="file" name="receipt" id="receipt" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+                    <button type="submit" class="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">Upload</button>
+                </form>
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold">Upload Result:</h3>
+                    <pre id="uploadResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+                </div>
+            </div>
+
+            <!-- Step 2: Analyze -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 text-purple-600 border-b pb-2">Step 2: Analyze Receipt</h2>
+                <form id="analyzeForm" class="space-y-4 mt-6">
+                    <div>
+                        <label for="filename" class="block mb-2 text-sm font-medium text-gray-900">Filename to analyze (auto-filled on upload):</label>
+                        <input type="text" name="filename" id="filename" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="e.g., receipt.jpg">
+                    </div>
+                    <button type="submit" class="w-full px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition">Analyze</button>
+                </form>
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold">Analysis Result:</h3>
+                    <pre id="analyzeResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- List Receipts -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-yellow-600 border-b pb-2">List All Receipts</h2>
+            <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/receipts</code> endpoint to get a list of all receipts.</p>
+            <button id="listBtn" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">List Receipts</button>
+            <pre id="listResult" class="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto mt-4"></pre>
+        </div>
+
+        <!-- List Items in Receipt -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-cyan-600 border-b pb-2">List Items in a Receipt</h2>
+            <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/receipts/:id/items</code> endpoint. First, upload and analyze a receipt, then list all receipts to get a receipt ID. Paste the ID below.</p>
+            <form id="listItemsForm" class="space-y-4 mt-6">
+                <div>
+                    <label for="receiptId" class="block mb-2 text-sm font-medium text-gray-900">Receipt ID:</label>
+                    <input type="text" name="receiptId" id="receiptId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter receipt ID">
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 transition">List Items</button>
+            </form>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold">Items Result:</h3>
+                <pre id="listItemsResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('healthBtn').addEventListener('click', async () => {
+            const resultElem = document.getElementById('healthResult');
+            resultElem.textContent = 'Loading...';
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultElem = document.getElementById('uploadResult');
+            const formData = new FormData(e.target);
+
+            resultElem.textContent = 'Uploading...';
+
+            try {
+                const response = await fetch('/api/receipts/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const data = await response.json();
+                resultElem.textContent = JSON.stringify(data, null, 2);
+                if (data.filename) {
+                    document.getElementById('filename').value = data.filename;
+                }
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+
+        document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultElem = document.getElementById('analyzeResult');
+            const filename = document.getElementById('filename').value;
+
+            resultElem.textContent = 'Analyzing...';
+
+            try {
+                const response = await fetch('/api/receipts/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ filename }),
+                });
+                const data = await response.json();
+                resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+
+        document.getElementById('listBtn').addEventListener('click', async () => {
+            const resultElem = document.getElementById('listResult');
+            resultElem.textContent = 'Loading...';
+            try {
+                const response = await fetch('/api/receipts');
+                const data = await response.json();
+                resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+
+        document.getElementById('listItemsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultElem = document.getElementById('listItemsResult');
+            const receiptId = document.getElementById('receiptId').value;
+
+            if (!receiptId) {
+                alert('Please enter a receipt ID.');
+                return;
+            }
+
+            resultElem.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(`/api/receipts/${receiptId}/items`);
+                const data = await response.json();
+                resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Scanner API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 m-0 p-0 font-sans">
+    <div class="container max-w-4xl mx-auto bg-white rounded-xl shadow-md p-10 mt-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">Receipt Scanner API</h1>
+        <p class="text-gray-600 mb-8">Welcome to the Receipt Scanner API documentation. Click on the endpoints below to expand them.</p>
+
+        <a href="/test" class="inline-block mb-8 px-6 py-3 bg-blue-500 text-white rounded-lg font-semibold shadow-md hover:bg-blue-600 transition-transform transform hover:scale-105">Go to API Test Page</a>
+
+        <div class="space-y-4">
+            <!-- Health Check Endpoint -->
+            <details class="group border rounded-lg overflow-hidden">
+                <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                    <div class="font-semibold"><span class="font-bold text-blue-600">GET</span> /api/health</div>
+                    <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+                </summary>
+                <div class="p-4 border-t">
+                    <p class="text-gray-600">Returns the health status of the API server.</p>
+                    <div class="mt-2 text-gray-700">Response:</div>
+                    <pre class="bg-gray-100 border-l-4 border-blue-600 p-3 mt-1 rounded text-sm overflow-x-auto">{ "status": "ok" }</pre>
+                </div>
+            </details>
+
+            <!-- Upload Receipt Endpoint -->
+            <details class="group border rounded-lg overflow-hidden">
+                <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                    <div class="font-semibold"><span class="font-bold text-green-600">POST</span> /api/receipts/upload</div>
+                    <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+                </summary>
+                <div class="p-4 border-t">
+                    <p class="text-gray-600 mt-1">Uploads a receipt image. The request must be a <code>multipart/form-data</code> POST request with the image attached to a form field named <code>receipt</code>.</p>
+                    <div class="mt-2 text-gray-700">Example Success Response:</div>
+                    <pre class="bg-gray-100 border-l-4 border-green-600 p-3 mt-1 rounded text-sm overflow-x-auto">{ "message": "Receipt uploaded successfully.", "filename": "receipt-2023-01.jpg" }</pre>
+                </div>
+            </details>
+
+            <!-- Analyze Receipt Endpoint -->
+            <details class="group border rounded-lg overflow-hidden">
+                <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                    <div class="font-semibold"><span class="font-bold text-purple-600">POST</span> /api/receipts/analyze</div>
+                    <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+                </summary>
+                <div class="p-4 border-t">
+                    <p class="text-gray-600 mt-1">Analyzes a previously uploaded receipt image using AI.</p>
+                    <div class="mt-2 text-gray-700">Example Request Body:</div>
+                    <pre class="bg-gray-100 border-l-4 border-purple-600 p-3 mt-1 rounded text-sm overflow-x-auto">{ "filename": "receipt-2023-01.jpg" }</pre>
+                    <div class="mt-2 text-gray-700">Example Success Response:</div>
+                    <pre class="bg-gray-100 border-l-4 border-purple-600 p-3 mt-1 rounded text-sm overflow-x-auto">{
+  "title": "Grocery Store",
+  "date": "2023-10-27",
+  "items": [
+    { "name": "Item 1", "price": 10.99 },
+    { "name": "Item 2", "price": 5.49 }
+  ],
+  "total": 16.48,
+  "verified_total": true
+}</pre>
+                </div>
+            </details>
+
+            <!-- List All Receipts Endpoint -->
+            <details class="group border rounded-lg overflow-hidden">
+                <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                    <div class="font-semibold"><span class="font-bold text-yellow-600">GET</span> /api/receipts</div>
+                    <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+                </summary>
+                <div class="p-4 border-t">
+                    <p class="text-gray-600">Lists all uploaded and analyzed receipts.</p>
+                    <div class="mt-2 text-gray-700">Success Response:</div>
+                    <pre class="bg-gray-100 border-l-4 border-yellow-600 p-3 mt-1 rounded text-sm overflow-x-auto">
+[
+  {
+    "id": "RECORD_ID",
+    "created": "2024-01-01T12:00:00.000Z",
+    "filename": "receipt1.jpg",
+    "title": "Grocery Store",
+    "total": 25.50,
+    "verified_total": true
+  }
+]
+</pre>
+                </div>
+            </details>
+
+            <!-- List Items in a Receipt Endpoint -->
+            <details class="group border rounded-lg overflow-hidden">
+                <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                    <div class="font-semibold"><span class="font-bold text-cyan-600">GET</span> /api/receipts/:id/items</div>
+                    <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+                </summary>
+                <div class="p-4 border-t">
+                    <p class="text-gray-600">Lists all items for a specific receipt.</p>
+                    <div class="mt-2 text-gray-700">Success Response:</div>
+                    <pre class="bg-gray-100 border-l-4 border-cyan-600 p-3 mt-1 rounded text-sm overflow-x-auto">
+[
+  {
+    "name": "Item 1",
+    "price": 10.99
+  }
+]
+</pre>
+                </div>
+            </details>
+        </div>
+
+        <footer class="mt-12 text-center text-gray-400 text-sm">
+            &copy; 2025 Receipt Scanner by <a href="https://github.com/stephanevdb" class="underline hover:text-blue-600">Stéphane Van den Broeck</a>
+        </footer>
+    </div>
+    <script>
+        document.querySelectorAll('details').forEach((detail) => {
+            detail.addEventListener('toggle', (event) => {
+                if (event.target.open) {
+                    document.querySelectorAll('details').forEach((otherDetail) => {
+                        if (otherDetail !== event.target) {
+                            otherDetail.open = false;
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
