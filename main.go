@@ -121,10 +121,12 @@ func main() {
 			result := []map[string]interface{}{}
 			for _, record := range records {
 				result = append(result, map[string]interface{}{
+					"id":       record.Id,
 					"name":     record.GetString("name"),
 					"price":    record.Get("price"),
 					"quantity": record.Get("quantity"),
 					"amount":   record.Get("amount"),
+					"paid":     record.Get("paid"),
 				})
 			}
 
@@ -317,6 +319,131 @@ func main() {
 			}
 
 			return c.JSON(http.StatusOK, resultJSON)
+		})
+
+		e.Router.POST("/api/users/create", func(c echo.Context) error {
+			type CreateUserRequest struct {
+				Name            string `json:"name"`
+				Email           string `json:"email"`
+				Password        string `json:"password"`
+				PasswordConfirm string `json:"passwordConfirm"`
+			}
+			req := new(CreateUserRequest)
+			if err := c.Bind(req); err != nil {
+				return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+			}
+			if req.Name == "" || req.Email == "" || req.Password == "" {
+				return echo.NewHTTPError(http.StatusBadRequest, "Name, email and password are required.")
+			}
+			if req.Password != req.PasswordConfirm {
+				return echo.NewHTTPError(http.StatusBadRequest, "Passwords do not match.")
+			}
+
+			dao := app.Dao()
+			collection, err := dao.FindCollectionByNameOrId("users")
+			if err != nil {
+				log.Printf("Failed to find 'users' collection: %v", err)
+				return echo.NewHTTPError(http.StatusInternalServerError, "User registration is not available.")
+			}
+
+			record := models.NewRecord(collection)
+			record.SetUsername(req.Email) // Use email as username, as it's required and unique.
+			record.Set("name", req.Name)
+			record.SetEmail(req.Email)
+			if err := record.SetPassword(req.Password); err != nil {
+				log.Printf("Failed to set password for user %s: %v", req.Email, err)
+				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create user.")
+			}
+
+			if err := dao.SaveRecord(record); err != nil {
+				log.Printf("Failed to save user record for %s: %v", req.Email, err)
+				return echo.NewHTTPError(http.StatusBadRequest, "Failed to create user. Email may already be in use.")
+			}
+
+			// Don't return the full record, it contains the password hash.
+			// Return some basic info instead.
+			return c.JSON(http.StatusCreated, map[string]interface{}{
+				"id":       record.Id,
+				"username": record.Username(),
+				"name":     record.GetString("name"),
+				"email":    record.Email(),
+			})
+		})
+
+		e.Router.PATCH("/api/items/:id/paid", func(c echo.Context) error {
+			id := c.PathParam("id")
+			if id == "" {
+				return echo.NewHTTPError(http.StatusBadRequest, "Item ID is required.")
+			}
+
+			type UpdatePaidStatusRequest struct {
+				Paid float64 `json:"paid"`
+			}
+			req := new(UpdatePaidStatusRequest)
+			if err := c.Bind(req); err != nil {
+				return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+			}
+
+			dao := app.Dao()
+			itemRecord, err := dao.FindRecordById("items", id)
+			if err != nil {
+				log.Printf("Failed to find item with ID %s: %v", id, err)
+				return echo.NewHTTPError(http.StatusNotFound, "Item not found.")
+			}
+
+			quantity := itemRecord.GetFloat("quantity")
+			if req.Paid > quantity {
+				return echo.NewHTTPError(http.StatusBadRequest, "Paid quantity cannot be greater than the item quantity.")
+			}
+			if req.Paid < 0 {
+				return echo.NewHTTPError(http.StatusBadRequest, "Paid quantity cannot be negative.")
+			}
+
+			itemRecord.Set("paid", req.Paid)
+
+			if err := dao.SaveRecord(itemRecord); err != nil {
+				log.Printf("Failed to update paid status for item %s: %v", id, err)
+				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update item.")
+			}
+
+			return c.JSON(http.StatusOK, itemRecord)
+		})
+
+		e.Router.GET("/api/items/:id", func(c echo.Context) error {
+			id := c.PathParam("id")
+			if id == "" {
+				return echo.NewHTTPError(http.StatusBadRequest, "Item ID is required.")
+			}
+
+			dao := app.Dao()
+			itemRecord, err := dao.FindRecordById("items", id)
+			if err != nil {
+				log.Printf("Failed to find item with ID %s: %v", id, err)
+				return echo.NewHTTPError(http.StatusNotFound, "Item not found.")
+			}
+
+			return c.JSON(http.StatusOK, itemRecord)
+		})
+
+		e.Router.DELETE("/api/receipts/:id", func(c echo.Context) error {
+			id := c.PathParam("id")
+			if id == "" {
+				return echo.NewHTTPError(http.StatusBadRequest, "Receipt ID is required.")
+			}
+
+			dao := app.Dao()
+			receiptRecord, err := dao.FindRecordById("receipts", id)
+			if err != nil {
+				log.Printf("Failed to find receipt with ID %s: %v", id, err)
+				return echo.NewHTTPError(http.StatusNotFound, "Receipt not found.")
+			}
+
+			if err := dao.DeleteRecord(receiptRecord); err != nil {
+				log.Printf("Failed to delete receipt with ID %s: %v", id, err)
+				return echo.NewHTTPError(http.StatusInternalServerError, "Failed to delete receipt.")
+			}
+
+			return c.NoContent(http.StatusNoContent)
 		})
 
 		return nil

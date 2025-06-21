@@ -11,6 +11,35 @@
     <div class="container mx-auto p-8">
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-12">API Test Page</h1>
 
+        <!-- Create User -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-pink-600 border-b pb-2">Create User</h2>
+            <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/users/create</code> endpoint to create a new user.</p>
+            <form id="createUserForm" class="space-y-4 mt-6">
+                <div>
+                    <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Name:</label>
+                    <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="John Doe" required>
+                </div>
+                <div>
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email:</label>
+                    <input type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="john.doe@example.com" required>
+                </div>
+                <div>
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password:</label>
+                    <input type="password" name="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                </div>
+                <div>
+                    <label for="passwordConfirm" class="block mb-2 text-sm font-medium text-gray-900">Confirm Password:</label>
+                    <input type="password" name="passwordConfirm" id="passwordConfirm" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600 transition">Create User</button>
+            </form>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold">Create User Result:</h3>
+                <pre id="createUserResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+            </div>
+        </div>
+
         <!-- Health Check -->
         <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
             <h2 class="text-2xl font-bold mb-4 text-blue-600 border-b pb-2">Health Check</h2>
@@ -79,6 +108,61 @@
             </div>
         </div>
 
+        <!-- Get Item by ID -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-teal-600 border-b pb-2">Get Item by ID</h2>
+            <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/items/:id</code> endpoint. First, list items in a receipt to get an item ID. Paste the ID below.</p>
+            <form id="getItemForm" class="space-y-4 mt-6">
+                <div>
+                    <label for="itemId" class="block mb-2 text-sm font-medium text-gray-900">Item ID:</label>
+                    <input type="text" name="itemId" id="itemId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter item ID">
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition">Get Item</button>
+            </form>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold">Item Result:</h3>
+                <pre id="getItemResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+            </div>
+        </div>
+
+        <!-- Update Item Paid Status -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-orange-600 border-b pb-2">Update Item Paid Status</h2>
+            <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/items/:id/paid</code> endpoint. Use an item ID from above and set the new paid quantity.</p>
+            <form id="updatePaidForm" class="space-y-4 mt-6">
+                <div>
+                    <label for="updateItemId" class="block mb-2 text-sm font-medium text-gray-900">Item ID:</label>
+                    <input type="text" name="updateItemId" id="updateItemId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter item ID">
+                </div>
+                <div>
+                    <label for="paidQuantity" class="block mb-2 text-sm font-medium text-gray-900">Paid Quantity:</label>
+                    <input type="number" name="paidQuantity" id="paidQuantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="e.g., 1" value="1">
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition">Update Paid Status</button>
+            </form>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold">Update Result:</h3>
+                <pre id="updatePaidResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+            </div>
+        </div>
+
+        <!-- Delete Receipt -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <h2 class="text-2xl font-bold mb-4 text-red-600 border-b pb-2">Delete Receipt</h2>
+            <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/receipts/:id</code> endpoint. First, list all receipts to get a receipt ID. Paste the ID below to delete it.</p>
+            <form id="deleteReceiptForm" class="space-y-4 mt-6">
+                <div>
+                    <label for="deleteReceiptId" class="block mb-2 text-sm font-medium text-gray-900">Receipt ID:</label>
+                    <input type="text" name="deleteReceiptId" id="deleteReceiptId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Enter receipt ID">
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Delete Receipt</button>
+            </form>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold">Delete Result:</h3>
+                <pre id="deleteReceiptResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -89,6 +173,33 @@
                 const response = await fetch('/api/health');
                 const data = await response.json();
                 resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultElem = document.getElementById('createUserResult');
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            resultElem.textContent = 'Creating user...';
+
+            try {
+                const response = await fetch('/api/users/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                resultElem.textContent = JSON.stringify(result, null, 2);
+                if(response.ok) {
+                    form.reset();
+                }
             } catch (err) {
                 resultElem.textContent = 'Error: ' + err;
             }
@@ -166,6 +277,87 @@
                 const response = await fetch(`/api/receipts/${receiptId}/items`);
                 const data = await response.json();
                 resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+
+        document.getElementById('getItemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultElem = document.getElementById('getItemResult');
+            const itemId = document.getElementById('itemId').value;
+
+            if (!itemId) {
+                alert('Please enter an item ID.');
+                return;
+            }
+
+            resultElem.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(`/api/items/${itemId}`);
+                const data = await response.json();
+                resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+
+        document.getElementById('updatePaidForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultElem = document.getElementById('updatePaidResult');
+            const itemId = document.getElementById('updateItemId').value;
+            const paid = parseFloat(document.getElementById('paidQuantity').value);
+
+            if (!itemId) {
+                alert('Please enter an item ID.');
+                return;
+            }
+
+            resultElem.textContent = 'Updating...';
+
+            try {
+                const response = await fetch(`/api/items/${itemId}/paid`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ paid }),
+                });
+                const data = await response.json();
+                resultElem.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultElem.textContent = 'Error: ' + err;
+            }
+        });
+
+        document.getElementById('deleteReceiptForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultElem = document.getElementById('deleteReceiptResult');
+            const receiptId = document.getElementById('deleteReceiptId').value;
+
+            if (!receiptId) {
+                alert('Please enter a receipt ID.');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete receipt with ID: ${receiptId}?`)) {
+                return;
+            }
+
+            resultElem.textContent = 'Deleting...';
+
+            try {
+                const response = await fetch(`/api/receipts/${receiptId}`, {
+                    method: 'DELETE',
+                });
+                if (response.status === 204) {
+                    resultElem.textContent = 'Receipt deleted successfully.';
+                    document.getElementById('deleteReceiptId').value = '';
+                } else {
+                    const data = await response.json();
+                    resultElem.textContent = JSON.stringify(data, null, 2);
+                }
             } catch (err) {
                 resultElem.textContent = 'Error: ' + err;
             }

@@ -108,14 +108,113 @@
                     <pre class="bg-gray-100 border-l-4 border-cyan-600 p-3 mt-1 rounded text-sm overflow-x-auto">
 [
   {
+    "id": "ITEM_RECORD_ID",
     "name": "Item 1",
-    "price": 10.99
+    "price": 10.99,
+    "quantity": 1,
+    "amount": 10.99,
+    "paid": 0
   }
 ]
 </pre>
                 </div>
             </details>
+
+            <!-- Get Item by ID Endpoint -->
+            <details class="group border rounded-lg overflow-hidden">
+                <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                    <div class="font-semibold"><span class="font-bold text-teal-600">GET</span> /api/items/:id</div>
+                    <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+                </summary>
+                <div class="p-4 border-t">
+                    <p class="text-gray-600">Retrieves the details for a single item by its ID.</p>
+                    <div class="mt-2 text-gray-700">Success Response:</div>
+                    <pre class="bg-gray-100 border-l-4 border-teal-600 p-3 mt-1 rounded text-sm overflow-x-auto">
+{
+    "id": "ITEM_RECORD_ID",
+    "collectionId": "...",
+    "collectionName": "items",
+    "created": "...",
+    "updated": "...",
+    "name": "Item 1",
+    "price": 10.99,
+    "quantity": 1,
+    "amount": 10.99,
+    "paid": 1,
+    "receipt": "RECEIPT_ID"
+}
+</pre>
+                </div>
+            </details>
+
+            <!-- Set Item Paid Status Endpoint -->
+            <details class="group border rounded-lg overflow-hidden">
+                <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                    <div class="font-semibold"><span class="font-bold text-orange-600">PATCH</span> /api/items/:id/paid</div>
+                    <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+                </summary>
+                <div class="p-4 border-t">
+                    <p class="text-gray-600 mt-1">Sets the paid quantity for a specific item.</p>
+                    <div class="mt-2 text-gray-700">Example Request Body:</div>
+                    <pre class="bg-gray-100 border-l-4 border-orange-600 p-3 mt-1 rounded text-sm overflow-x-auto">{
+"paid": 1
+}</pre>
+                    <div class="mt-2 text-gray-700">Example Success Response:</div>
+                    <pre class="bg-gray-100 border-l-4 border-orange-600 p-3 mt-1 rounded text-sm overflow-x-auto">{
+    "id": "ITEM_RECORD_ID",
+    "collectionId": "...",
+    "collectionName": "items",
+    "created": "...",
+    "updated": "...",
+    "name": "Item 1",
+    "price": 10.99,
+    "quantity": 1,
+    "amount": 10.99,
+    "paid": 1,
+    "receipt": "RECEIPT_ID"
+}</pre>
+                </div>
+            </details>
+
+            <!-- Create User Endpoint -->
+            <details class="group border rounded-lg overflow-hidden">
+                <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                    <div class="font-semibold"><span class="font-bold text-pink-600">POST</span> /api/users/create</div>
+                    <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+                </summary>
+                <div class="p-4 border-t">
+                    <p class="text-gray-600 mt-1">Creates a new user account.</p>
+                    <div class="mt-2 text-gray-700">Example Request Body:</div>
+                    <pre class="bg-gray-100 border-l-4 border-pink-600 p-3 mt-1 rounded text-sm overflow-x-auto">{
+"name": "John Doe",
+"email": "john.doe@example.com",
+"password": "password123",
+"passwordConfirm": "password123"
+}</pre>
+                    <div class="mt-2 text-gray-700">Example Success Response:</div>
+                    <pre class="bg-gray-100 border-l-4 border-pink-600 p-3 mt-1 rounded text-sm overflow-x-auto">{
+"id": "USER_RECORD_ID",
+"username": "john.doe@example.com",
+"name": "John Doe",
+"email": "john.doe@example.com"
+}</pre>
+                </div>
+            </details>
+
         </div>
+
+        <!-- Delete Receipt Endpoint -->
+        <details class="group border rounded-lg overflow-hidden">
+            <summary class="flex items-center justify-between p-4 cursor-pointer bg-gray-100 hover:bg-gray-200">
+                <div class="font-semibold"><span class="font-bold text-red-600">DELETE</span> /api/receipts/:id</div>
+                <span class="transform transition-transform duration-200 group-open:rotate-90">&#9654;</span>
+            </summary>
+            <div class="p-4 border-t">
+                <p class="text-gray-600 mt-1">Deletes a receipt and all its associated items.</p>
+                <div class="mt-2 text-gray-700">Success Response:</div>
+                <pre class="bg-gray-100 border-l-4 border-red-600 p-3 mt-1 rounded text-sm overflow-x-auto">Status: 204 No Content</pre>
+            </div>
+        </details>
 
         <footer class="mt-12 text-center text-gray-400 text-sm">
             &copy; 2025 Receipt Scanner by <a href="https://github.com/stephanevdb" class="underline hover:text-blue-600">Stéphane Van den Broeck</a>

@@ -133,6 +133,11 @@ func InitCollections(app *pocketbase.PocketBase) error {
 						Required: false,
 					},
 					&schema.SchemaField{
+						Name:     "paid",
+						Type:     schema.FieldTypeNumber,
+						Required: false,
+					},
+					&schema.SchemaField{
 						Name:     "receipt",
 						Type:     schema.FieldTypeRelation,
 						Required: true,
@@ -192,6 +197,43 @@ func InitCollections(app *pocketbase.PocketBase) error {
 				return err
 			}
 			log.Println("'amount' field added successfully.")
+		}
+		if itemsCollection.Schema.GetFieldByName("paid") == nil {
+			log.Println("Adding 'paid' field to 'items' collection...")
+			field := &schema.SchemaField{
+				Name:     "paid",
+				Type:     schema.FieldTypeNumber,
+				Required: false,
+			}
+			itemsCollection.Schema.AddField(field)
+			if err := dao.SaveCollection(itemsCollection); err != nil {
+				log.Printf("Error adding 'paid' field to 'items' collection: %v", err)
+				return err
+			}
+			log.Println("'paid' field added successfully.")
+		}
+	}
+
+	// --- Users collection ---
+	// Add "name" field to users collection if it doesn't exist
+	usersCollection, err := dao.FindCollectionByNameOrId("users")
+	if err != nil {
+		log.Printf("Could not find 'users' collection to add 'name' field, this might be expected if it's not created yet: %v", err)
+	} else {
+		if usersCollection.Schema.GetFieldByName("name") == nil {
+			log.Println("Adding 'name' field to 'users' collection...")
+			field := &schema.SchemaField{
+				Name:     "name",
+				Type:     schema.FieldTypeText,
+				Required: false,
+				Options:  &schema.TextOptions{Max: types.Pointer(255)},
+			}
+			usersCollection.Schema.AddField(field)
+			if err := dao.SaveCollection(usersCollection); err != nil {
+				log.Printf("Error adding 'name' field to 'users' collection: %v", err)
+				return err
+			}
+			log.Println("'name' field added successfully.")
 		}
 	}
 
