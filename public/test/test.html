@@ -35,7 +35,10 @@
                 <button type="submit" class="w-full px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600 transition">Create User</button>
             </form>
             <div class="mt-6">
-                <h3 class="text-lg font-semibold">Create User Result:</h3>
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold">Create User Result:</h3>
+                    <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="createUser">Show Request</button>
+                </div>
                 <pre id="createUserResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
             </div>
         </div>
@@ -45,7 +48,13 @@
             <h2 class="text-2xl font-bold mb-4 text-blue-600 border-b pb-2">Health Check</h2>
             <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/health</code> endpoint to ensure the server is responding.</p>
             <button id="healthBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Test API Health</button>
-            <pre id="healthResult" class="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto mt-4"></pre>
+            <div class="mt-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold">Result:</h3>
+                    <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="health">Show Request</button>
+                </div>
+                <pre id="healthResult" class="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+            </div>
         </div>
 
         <!-- Receipt Workflow -->
@@ -61,7 +70,10 @@
                     <button type="submit" class="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">Upload</button>
                 </form>
                 <div class="mt-6">
-                    <h3 class="text-lg font-semibold">Upload Result:</h3>
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-semibold">Upload Result:</h3>
+                        <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="upload">Show Request</button>
+                    </div>
                     <pre id="uploadResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
                 </div>
             </div>
@@ -77,7 +89,10 @@
                     <button type="submit" class="w-full px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition">Analyze</button>
                 </form>
                 <div class="mt-6">
-                    <h3 class="text-lg font-semibold">Analysis Result:</h3>
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-semibold">Analysis Result:</h3>
+                        <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="analyze">Show Request</button>
+                    </div>
                     <pre id="analyzeResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
                 </div>
             </div>
@@ -88,7 +103,13 @@
             <h2 class="text-2xl font-bold mb-4 text-yellow-600 border-b pb-2">List All Receipts</h2>
             <p class="mb-4 text-gray-700">Test the <code class="bg-gray-200 px-1 rounded">/api/receipts</code> endpoint to get a list of all receipts.</p>
             <button id="listBtn" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">List Receipts</button>
-            <pre id="listResult" class="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto mt-4"></pre>
+            <div class="mt-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold">Result:</h3>
+                    <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="list">Show Request</button>
+                </div>
+                <pre id="listResult" class="bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
+            </div>
         </div>
 
         <!-- List Items in Receipt -->
@@ -103,7 +124,10 @@
                 <button type="submit" class="w-full px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 transition">List Items</button>
             </form>
             <div class="mt-6">
-                <h3 class="text-lg font-semibold">Items Result:</h3>
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold">Items Result:</h3>
+                    <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="listItems">Show Request</button>
+                </div>
                 <pre id="listItemsResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
             </div>
         </div>
@@ -120,7 +144,10 @@
                 <button type="submit" class="w-full px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition">Get Item</button>
             </form>
             <div class="mt-6">
-                <h3 class="text-lg font-semibold">Item Result:</h3>
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold">Item Result:</h3>
+                    <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="getItem">Show Request</button>
+                </div>
                 <pre id="getItemResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
             </div>
         </div>
@@ -141,7 +168,10 @@
                 <button type="submit" class="w-full px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition">Update Paid Status</button>
             </form>
             <div class="mt-6">
-                <h3 class="text-lg font-semibold">Update Result:</h3>
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold">Update Result:</h3>
+                    <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="updatePaid">Show Request</button>
+                </div>
                 <pre id="updatePaidResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
             </div>
         </div>
@@ -158,17 +188,77 @@
                 <button type="submit" class="w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Delete Receipt</button>
             </form>
             <div class="mt-6">
-                <h3 class="text-lg font-semibold">Delete Result:</h3>
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold">Delete Result:</h3>
+                    <button class="showRequestBtn text-sm text-blue-500 hover:underline focus:outline-none" data-request-id="deleteReceipt">Show Request</button>
+                </div>
                 <pre id="deleteReceiptResult" class="mt-2 bg-gray-100 p-4 rounded text-left text-sm overflow-x-auto"></pre>
             </div>
         </div>
 
     </div>
 
+    <!-- Modal -->
+    <div id="requestModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-1/2 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Request Details</h3>
+                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+                <div class="mt-2 px-7 py-3">
+                    <pre id="modalContent" class="text-sm text-left bg-gray-100 p-4 rounded whitespace-pre-wrap break-all"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        const requests = {};
+
+        // Modal handling
+        const requestModal = document.getElementById('requestModal');
+        const modalContent = document.getElementById('modalContent');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        function showRequestModal(content) {
+            modalContent.textContent = content;
+            requestModal.classList.remove('hidden');
+        }
+
+        closeModalBtn.addEventListener('click', () => {
+            requestModal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == requestModal) {
+                requestModal.classList.add('hidden');
+            }
+        });
+
+        document.querySelectorAll('.showRequestBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const requestId = btn.dataset.requestId;
+                if (requests[requestId]) {
+                    showRequestModal(requests[requestId]);
+                } else {
+                    showRequestModal('Request details not available yet. Please perform the action first.');
+                }
+            });
+        });
+
         document.getElementById('healthBtn').addEventListener('click', async () => {
             const resultElem = document.getElementById('healthResult');
             resultElem.textContent = 'Loading...';
+
+            const requestDetails = {
+                method: 'GET',
+                url: '/api/health',
+            };
+            requests['health'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}`;
+
             try {
                 const response = await fetch('/api/health');
                 const data = await response.json();
@@ -186,6 +276,14 @@
             const data = Object.fromEntries(formData.entries());
 
             resultElem.textContent = 'Creating user...';
+
+            const requestDetails = {
+                method: 'POST',
+                url: '/api/users/create',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data, null, 2)
+            };
+            requests['createUser'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}\nHeaders: ${JSON.stringify(requestDetails.headers, null, 2)}\n\nBody:\n${requestDetails.body}`;
 
             try {
                 const response = await fetch('/api/users/create', {
@@ -212,6 +310,14 @@
 
             resultElem.textContent = 'Uploading...';
 
+            const requestDetails = {
+                method: 'POST',
+                url: '/api/receipts/upload',
+                headers: { 'Content-Type': 'multipart/form-data' },
+                body: '[File Data]'
+            };
+            requests['upload'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}\nHeaders: ${JSON.stringify(requestDetails.headers, null, 2)}\n\nBody:\n${requestDetails.body}`;
+
             try {
                 const response = await fetch('/api/receipts/upload', {
                     method: 'POST',
@@ -234,6 +340,14 @@
 
             resultElem.textContent = 'Analyzing...';
 
+            const requestDetails = {
+                method: 'POST',
+                url: '/api/receipts/analyze',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filename }, null, 2)
+            };
+            requests['analyze'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}\nHeaders: ${JSON.stringify(requestDetails.headers, null, 2)}\n\nBody:\n${requestDetails.body}`;
+
             try {
                 const response = await fetch('/api/receipts/analyze', {
                     method: 'POST',
@@ -252,6 +366,13 @@
         document.getElementById('listBtn').addEventListener('click', async () => {
             const resultElem = document.getElementById('listResult');
             resultElem.textContent = 'Loading...';
+
+            const requestDetails = {
+                method: 'GET',
+                url: '/api/receipts'
+            };
+            requests['list'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}`;
+
             try {
                 const response = await fetch('/api/receipts');
                 const data = await response.json();
@@ -272,6 +393,12 @@
             }
 
             resultElem.textContent = 'Loading...';
+
+            const requestDetails = {
+                method: 'GET',
+                url: `/api/receipts/${receiptId}/items`
+            };
+            requests['listItems'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}`;
 
             try {
                 const response = await fetch(`/api/receipts/${receiptId}/items`);
@@ -294,6 +421,12 @@
 
             resultElem.textContent = 'Loading...';
 
+            const requestDetails = {
+                method: 'GET',
+                url: `/api/items/${itemId}`
+            };
+            requests['getItem'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}`;
+
             try {
                 const response = await fetch(`/api/items/${itemId}`);
                 const data = await response.json();
@@ -315,6 +448,14 @@
             }
 
             resultElem.textContent = 'Updating...';
+
+            const requestDetails = {
+                method: 'PATCH',
+                url: `/api/items/${itemId}/paid`,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ paid }, null, 2)
+            };
+            requests['updatePaid'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}\nHeaders: ${JSON.stringify(requestDetails.headers, null, 2)}\n\nBody:\n${requestDetails.body}`;
 
             try {
                 const response = await fetch(`/api/items/${itemId}/paid`, {
@@ -346,6 +487,12 @@
             }
 
             resultElem.textContent = 'Deleting...';
+
+            const requestDetails = {
+                method: 'DELETE',
+                url: `/api/receipts/${receiptId}`
+            };
+            requests['deleteReceipt'] = `Method: ${requestDetails.method}\nURL: ${requestDetails.url}`;
 
             try {
                 const response = await fetch(`/api/receipts/${receiptId}`, {
