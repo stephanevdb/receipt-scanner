@@ -20,6 +20,8 @@ import (
 
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"
+
+	"github.com/pocketbase/pocketbase/apis"
 )
 
 func main() {
@@ -58,6 +60,8 @@ func main() {
 		}
 
 		e.Router.GET("/api/health", func(c echo.Context) error {
+			
+			
 			return c.JSON(200, map[string]string{"status": "ok"})
 		})
 
@@ -68,6 +72,9 @@ func main() {
 		e.Router.GET("/test", func(c echo.Context) error {
 			return c.File("public/test/test.html")
 		})
+
+		// Serve the uploads directory
+		e.Router.Static("/uploads", "uploads")
 
 		e.Router.GET("/api/receipts", func(c echo.Context) error {
 			dao := app.Dao()
@@ -134,36 +141,66 @@ func main() {
 		})
 
 		e.Router.POST("/api/receipts/upload", func(c echo.Context) error {
+			// Get the authenticated user from the context.
+			record, _ := c.Get("authRecord").(*models.Record)
+			if record == nil {
+				return c.JSON(http.StatusUnauthorized, map[string]string{"message": "You must be logged in to upload a receipt."})
+			}
+
 			file, err := c.FormFile("receipt")
 			if err != nil {
-				return err
+				log.Printf("Failed to get form file: %v", err)
+				return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid receipt file."})
 			}
 
 			src, err := file.Open()
 			if err != nil {
-				return err
+				log.Printf("Failed to open uploaded file: %v", err)
+				return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to process uploaded file."})
 			}
 			defer src.Close()
 
 			if err := os.MkdirAll("uploads", 0755); err != nil {
-				return err
+				log.Printf("Failed to create uploads directory: %v", err)
+				return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Server error: failed to create uploads directory."})
 			}
 
-			dst, err := os.Create(filepath.Join("uploads", file.Filename))
+			// Sanitize filename
+			filename := filepath.Base(file.Filename)
+			dstPath := filepath.Join("uploads", filename)
+
+			dst, err := os.Create(dstPath)
 			if err != nil {
-				return err
+				log.Printf("Failed to create destination file %s: %v", dstPath, err)
+				return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Server error: failed to save uploaded file."})
 			}
 			defer dst.Close()
 
 			if _, err = io.Copy(dst, src); err != nil {
-				return err
+				log.Printf("Failed to copy file content to %s: %v", dstPath, err)
+				return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Server error: failed to write uploaded file."})
 			}
 
-			return c.JSON(200, map[string]interface{}{
+			// Create a new receipt record and associate it with the user.
+			receiptsCollection, err := app.Dao().FindCollectionByNameOrId("receipts")
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Server error: could not find receipts collection."})
+			}
+
+			receiptRecord := models.NewRecord(receiptsCollection)
+			receiptRecord.Set("filename", filename)
+			receiptRecord.Set("user", record.Id) // Associate with the authenticated user.
+
+			if err := app.Dao().SaveRecord(receiptRecord); err != nil {
+				log.Printf("Failed to save receipt record: %v", err)
+				return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Server error: failed to save receipt."})
+			}
+
+			return c.JSON(http.StatusOK, map[string]interface{}{
 				"message":  "Receipt uploaded successfully.",
-				"filename": file.Filename,
+				"filename": filename,
 			})
-		})
+		}, apis.RequireRecordAuth())
 
 		e.Router.POST("/api/receipts/analyze", func(c echo.Context) error {
 			type AnalyzeRequest struct {

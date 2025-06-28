@@ -43,6 +43,12 @@ func InitCollections(app *pocketbase.PocketBase) error {
 						Type:     schema.FieldTypeNumber,
 						Required: false,
 					},
+					&schema.SchemaField{
+						Name:     "user",
+						Type:     schema.FieldTypeRelation,
+						Required: true,
+						Options:  &schema.RelationOptions{CollectionId: "_pb_users_auth_", MaxSelect: types.Pointer(1), CascadeDelete: false},
+					},
 				),
 			}
 			if err = dao.SaveCollection(receiptsCollection); err != nil {
@@ -214,12 +220,66 @@ func InitCollections(app *pocketbase.PocketBase) error {
 		}
 	}
 
+	// --- Friend Groups collection ---
+	friendGroupsCollection, err := dao.FindCollectionByNameOrId("friend_groups")
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("Creating 'friend_groups' collection...")
+			friendGroupsCollection = &models.Collection{
+				Name:       "friend_groups",
+				Type:       "base",
+				ViewRule:   types.Pointer("@request.auth.id != ''"),
+				CreateRule: types.Pointer("@request.auth.id != ''"),
+				Schema: schema.NewSchema(
+					&schema.SchemaField{
+						Name:     "name",
+						Type:     schema.FieldTypeText,
+						Required: true,
+						Options:  &schema.TextOptions{Max: types.Pointer(255)},
+					},
+				),
+			}
+			if err = dao.SaveCollection(friendGroupsCollection); err != nil {
+				log.Printf("Error creating 'friend_groups' collection: %v", err)
+				return err
+			}
+			log.Println("'friend_groups' collection created successfully.")
+		} else {
+			log.Printf("Error finding 'friend_groups' collection: %v", err)
+			return err
+		}
+	} else {
+		log.Println("'friend_groups' collection already exists.")
+	}
+
 	// --- Users collection ---
 	// Add "name" field to users collection if it doesn't exist
 	usersCollection, err := dao.FindCollectionByNameOrId("users")
 	if err != nil {
 		log.Printf("Could not find 'users' collection to add 'name' field, this might be expected if it's not created yet: %v", err)
 	} else {
+		// This ensures a user can update their own record, which is the default for
+		// user collections but is good to set explicitly when modifying the schema.
+		if usersCollection.UpdateRule == nil || *usersCollection.UpdateRule == "" {
+			usersCollection.UpdateRule = types.Pointer("@request.auth.id = id")
+			if err := dao.SaveCollection(usersCollection); err != nil {
+				log.Printf("Error setting UpdateRule on 'users' collection: %v", err)
+				return err
+			}
+			log.Println("UpdateRule for 'users' collection set successfully.")
+		}
+
+		// Allow using email as username to prevent validation errors on update
+		if val, _ := usersCollection.Options["allowEmailUsername"].(bool); !val {
+			log.Println("Enabling 'AllowEmailUsername' for 'users' collection...")
+			usersCollection.Options["allowEmailUsername"] = true
+			if err := dao.SaveCollection(usersCollection); err != nil {
+				log.Printf("Error enabling 'AllowEmailUsername' on 'users' collection: %v", err)
+				return err
+			}
+			log.Println("'AllowEmailUsername' for 'users' collection enabled successfully.")
+		}
+
 		if usersCollection.Schema.GetFieldByName("name") == nil {
 			log.Println("Adding 'name' field to 'users' collection...")
 			field := &schema.SchemaField{
@@ -234,6 +294,55 @@ func InitCollections(app *pocketbase.PocketBase) error {
 				return err
 			}
 			log.Println("'name' field added successfully.")
+		}
+		if usersCollection.Schema.GetFieldByName("iban") == nil {
+			log.Println("Adding 'iban' field to 'users' collection...")
+			field := &schema.SchemaField{
+				Name:     "iban",
+				Type:     schema.FieldTypeText,
+				Required: false,
+				Options:  &schema.TextOptions{Max: types.Pointer(34)},
+			}
+			usersCollection.Schema.AddField(field)
+			if err := dao.SaveCollection(usersCollection); err != nil {
+				log.Printf("Error adding 'iban' field to 'users' collection: %v", err)
+				return err
+			}
+			log.Println("'iban' field added successfully.")
+		}
+		if usersCollection.Schema.GetFieldByName("bic") == nil {
+			log.Println("Adding 'bic' field to 'users' collection...")
+			field := &schema.SchemaField{
+				Name:     "bic",
+				Type:     schema.FieldTypeText,
+				Required: false,
+				Options:  &schema.TextOptions{Max: types.Pointer(11)},
+			}
+			usersCollection.Schema.AddField(field)
+			if err := dao.SaveCollection(usersCollection); err != nil {
+				log.Printf("Error adding 'bic' field to 'users' collection: %v", err)
+				return err
+			}
+			log.Println("'bic' field added successfully.")
+		}
+		if usersCollection.Schema.GetFieldByName("friend_group") == nil {
+			log.Println("Adding 'friend_group' relation to 'users' collection...")
+			field := &schema.SchemaField{
+				Name:     "friend_group",
+				Type:     schema.FieldTypeRelation,
+				Required: false,
+				Options: &schema.RelationOptions{
+					CollectionId:  friendGroupsCollection.Id,
+					MaxSelect:     types.Pointer(1),
+					CascadeDelete: false,
+				},
+			}
+			usersCollection.Schema.AddField(field)
+			if err := dao.SaveCollection(usersCollection); err != nil {
+				log.Printf("Error adding 'friend_group' relation to 'users' collection: %v", err)
+				return err
+			}
+			log.Println("'friend_group' relation added successfully.")
 		}
 	}
 

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "pocketbase": "^0.26.1",
+    "svelte-routing": "^2.13.0"
+  }
+}
